@@ -1,68 +1,61 @@
-# **Log Archiving Script (`log-archive.sh`)**
+# **Log Archive Script**
 
-## **Description**
-This script compresses a specified directory into a `.tar.gz` archive with a timestamped filename. It ensures easy log backups by maintaining structured and dated archives.
+## **Overview**
+The **Log Archive Script** is a Bash utility designed to compress and archive directories, primarily for log management and backup purposes. It supports multiple compression formats, allows users to specify a custom storage location, and maintains a history of archived files.
+
+## **Features**
+- Supports **gzip (`.tar.gz`)**, **bzip2 (`.tar.bz2`)**, and **xz (`.tar.xz`)** compression formats.
+- Allows users to specify a **custom storage location** for archived files.
+- Includes **error handling** to check for missing directories and invalid inputs.
+- Maintains a **log file** (`log-archive-history.txt`) that records all archived files.
+- Uses **ANSI color-coded messages** for better readability in the terminal.
+
+## **Installation**
+Ensure the script has executable permissions:
+```bash
+chmod +x log-archive.sh
+```
+Place the script in a directory included in your `PATH` for easy execution.
 
 ## **Usage**
 ```bash
-./log-archive.sh <directory-to-archive>
+./log-archive.sh <directory-to-archive> [storage-location] [compression-method]
 ```
-- The script takes one argument: the path to the directory you want to archive.
-- It creates a `.tar.gz` archive with the format:  
-  ```
-  <directory_name>-YYYY-MM-DD.tar.gz
-  ```
-- The archive is saved in the current working directory.
 
-## **Prerequisites**
-- Ensure you have `tar` installed (default in most Linux distributions).
-- The script requires **execute** permissions. You can grant them using:
-  ```bash
-  chmod +x log-archive.sh
-  ```
+### **Arguments**
+| Argument | Description | Default |
+|----------|-------------|---------|
+| `<directory-to-archive>` | The directory to be archived. | Required |
+| `[storage-location]` | Directory where the archive will be saved. | Current working directory |
+| `[compression-method]` | Compression type: `gz` (gzip), `bz2` (bzip2), `xz` (xz). | `gz` |
 
-## **Parameters**
-| Parameter | Description |
-|-----------|-------------|
-| `<directory-to-archive>` | Path to the directory that needs to be archived. |
+### **Examples**
+#### **Basic Usage (Default gzip Compression)**
+```bash
+./log-archive.sh /var/logs
+```
+This command archives the `/var/logs` directory into `logs-YYYY-MM-DD.tar.gz` and saves it in the current working directory.
 
-## **Output**
-- On success, it outputs:
-  ```
-  Successfully archived log <directory_name>-YYYY-MM-DD.tar.gz to <current-path>
-  ```
-- On failure (if no directory is provided), it displays:
-  ```
-  Usage: ./log-archive.sh <directory to archive>
-  Try again
-  ```
+#### **Specify a Storage Directory**
+```bash
+./log-archive.sh /var/logs /backups
+```
+This archives the `/var/logs` directory and saves the `.tar.gz` file in `/backups`.
 
-## **Example Usage**
-1. **Archiving a directory named `logs`:**
-   ```bash
-   ./log-archive.sh /var/logs
-   ```
-   Output:
-   ```
-   Successfully archived log logs-2025-03-14.tar.gz to /home/user
-   ```
+#### **Use bzip2 Compression**
+```bash
+./log-archive.sh /var/logs /backups bz2
+```
+This archives the `/var/logs` directory using `bzip2` compression and saves it in `/backups`.
 
-2. **Trying to run without a directory argument:**
-   ```bash
-   ./log-archive.sh
-   ```
-   Output:
-   ```
-   Usage: ./log-archive.sh <directory to archive>
-   Try again
-   ```
+## **Logging**
+Each time an archive is created, a record is added to `log-archive-history.txt` in the storage directory. The log file contains timestamps and paths of archived files for reference.
 
+## **Error Handling**
+- If no directory is provided, the script displays usage instructions.
+- If the specified directory does not exist, the script exits with an error.
+- If an invalid compression method is specified, the script defaults to `gzip`.
 
-
-   https://roadmap.sh/projects/log-archive-tool
-
-## **Notes**
-- The script extracts only the **contents** of the specified directory into the archive, without including the full directory path.
-- The resulting `.tar.gz` file is created in the directory where the script is executed.
-
----
+## **Dependencies**
+- `tar` (Pre-installed on most Linux distributions)
+- `gzip`, `bzip2`, or `xz` (Depending on the selected compression method)
